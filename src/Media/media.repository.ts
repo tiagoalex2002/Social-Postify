@@ -30,4 +30,8 @@ export class MediaRepository {
       data: media,
     });
   }
+
+  async deleteMedia(id: number) {
+    return await this.prisma.media.delete({ where: { id } });
+  }
 }
