@@ -18,6 +18,14 @@ export class PublicationsRepository {
     return await this.prisma.publications.findUnique({ where: { id } });
   }
 
+  async getPostById(id: number) {
+    return await this.prisma.posts.findUnique({ where: { id } });
+  }
+
+  async getPublicationByMediaId(id: number) {
+    return await this.prisma.publications.findFirs({ where: { mediaId: id } });
+  }
+
   async updatePublication(id: number, publication: CreatePublicationsDTO) {
     return await this.prisma.publications.upsert({
       where: {
@@ -27,6 +35,10 @@ export class PublicationsRepository {
         data: { publication },
       },
     });
+  }
+
+  async getMediaById(id: number) {
+    return await this.prisma.media.findUnique({ where: { id } });
   }
 
   async deletePublication(id: number) {

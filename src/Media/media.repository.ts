@@ -31,6 +31,10 @@ export class MediaRepository {
     });
   }
 
+  async getPublicationByMediaId(id: number) {
+    return await this.prisma.publications.findFirst({ where: { mediaId: id } });
+  }
+
   async deleteMedia(id: number) {
     return await this.prisma.media.delete({ where: { id } });
   }

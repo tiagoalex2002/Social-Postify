@@ -18,6 +18,10 @@ export class PostRepository {
     return await this.prisma.posts.findUnique({ where: { id } });
   }
 
+  async getPublicationByPostId(id: number) {
+    return await this.prisma.publications.findFirst({ where: { postId: id } });
+  }
+
   async updatePost(id: number, post: CreatePostsDTO) {
     return await this.prisma.posts.upsert({
       where: {
