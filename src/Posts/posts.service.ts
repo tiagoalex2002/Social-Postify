@@ -31,7 +31,12 @@ export class PostsService {
   }
 
   updatePost(post: CreatePostsDTO, id: number) {
-    return this.postRepository.updatePost(id, post);
+    const update = this.postRepository.updatePost(id, post);
+    if (update) {
+      return update;
+    } else {
+      throw new NotFoundException('NOT FOUND');
+    }
   }
 
   deletePost(id: number) {
