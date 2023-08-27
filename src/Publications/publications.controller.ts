@@ -52,6 +52,9 @@ export class PublicationsController {
       if (error.message === 'NOT FOUND') {
         throw new HttpException('NOT FOUND', HttpStatus.NOT_FOUND);
       }
+      if (error.message === 'FORBIDDEN') {
+        throw new HttpException('FORBIDDEN', HttpStatus.FORBIDDEN);
+      }
     }
   }
 

@@ -14,7 +14,7 @@ export class PublicationsRepository {
     return await this.prisma.publications.findMany();
   }
 
-  async getPublicationById(id: number) {
+  async getPublicationById(id: number): Promise<CreatePublicationsDTO> {
     return await this.prisma.publications.findUnique({ where: { id } });
   }
 
