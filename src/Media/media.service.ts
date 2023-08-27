@@ -27,9 +27,17 @@ export class MediaService {
     }
   }
 
-  createMedia(media: CreateMediaDTO) {
-    if (media.title === media.username) {
-      throw new ConflictException('CONFLICT');
+  async createMedia(media: CreateMediaDTO) {
+    const medias = await this.mediaRepository.getMedias();
+    if (medias) {
+      for (let i = 0; i < medias.length; i++) {
+        if (
+          media.title === medias[i].title &&
+          media.username === medias[i].username
+        ) {
+          throw new ConflictException('CONFLICT');
+        }
+      }
     } else {
       return this.mediaRepository.createMedia(media);
     }
@@ -39,7 +47,12 @@ export class MediaService {
     if (media.title === media.username) {
       throw new ConflictException('CONFLICT');
     } else {
-      return this.mediaRepository.updateMedia(media, id);
+      const midia = this.mediaRepository.getMediaById(id);
+      if (midia) {
+        return this.mediaRepository.updateMedia(media, id);
+      } else {
+        throw new NotFoundException('NOT FOUND');
+      }
     }
   }
 

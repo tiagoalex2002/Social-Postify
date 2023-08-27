@@ -40,7 +40,11 @@ export class MediaController {
     try {
       return this.mediaService.updateMedia(body, Number(id));
     } catch (error) {
-      throw new HttpException('CONFLICT', HttpStatus.CONFLICT);
+      if (error.message === 'CONFLICT') {
+        throw new HttpException('CONFLICT', HttpStatus.CONFLICT);
+      } else {
+        throw new HttpException('NOT FOUND', HttpStatus.NOT_FOUND);
+      }
     }
   }
 

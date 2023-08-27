@@ -6,7 +6,7 @@ import { PrismaService } from 'src/Prisma/prisma.service';
 export class MediaRepository {
   constructor(private prisma: PrismaService) {}
 
-  async getMedias() {
+  async getMedias(): Promise<any[]> {
     return await this.prisma.media.findMany();
   }
 
