@@ -8,7 +8,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
-import { CreateMediaDTO } from 'src/Dtos/media.dtos';
+import { CreateMediaDTO } from '../Dtos/media.dtos';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 

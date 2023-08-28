@@ -9,7 +9,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
-import { CreatePublicationsDTO } from 'src/Dtos/publications.dtos';
+import { CreatePublicationsDTO } from '../Dtos/publications.dtos';
 import { HttpException } from '@nestjs/common';
 
 @Controller('publications')

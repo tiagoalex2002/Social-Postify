@@ -1,4 +1,4 @@
-import { PrismaService } from 'src/Prisma/prisma.service';
+import { PrismaService } from '../Prisma/prisma.service';
 import { CreatePublicationsDTO } from 'src/Dtos/publications.dtos';
 import { Injectable } from '@nestjs/common';
 
@@ -23,7 +23,7 @@ export class PublicationsRepository {
   }
 
   async getPublicationByMediaId(id: number) {
-    return await this.prisma.publications.findFirs({ where: { mediaId: id } });
+    return await this.prisma.publications.findFirst({ where: { mediaId: id } });
   }
 
   async updatePublication(id: number, publication: CreatePublicationsDTO) {
@@ -31,8 +31,15 @@ export class PublicationsRepository {
       where: {
         id,
       },
+      create: {
+        postId: publication.postId,
+        mediaId: publication.mediaId,
+        date: publication.date,
+      },
       update: {
-        data: { publication },
+        postId: publication.postId,
+        mediaId: publication.mediaId,
+        date: publication.date,
       },
     });
   }

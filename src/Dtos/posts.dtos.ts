@@ -7,4 +7,7 @@ export class CreatePostsDTO {
   @IsString()
   @IsUrl()
   text: string;
+
+  @IsString()
+  image: string;
 }

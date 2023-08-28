@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { PrismaService } from 'src/Prisma/prisma.service';
-import { PrismaModule } from 'src/Prisma/prisma.module';
+import { PrismaModule } from '../src/Prisma/prisma.module';
+import { PrismaService } from '../src/Prisma/prisma.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -16,13 +16,15 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     prisma = await moduleFixture.resolve(PrismaService); //ou o get
-    await prisma.ENTIDADE.deleteMany();
+    await prisma.media.deleteMany();
+    await prisma.posts.deleteMany();
+    await prisma.publications.deleteMany();
     await app.init();
   });
 
   it('GET /health', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/health')
       .expect(200)
       .expect('Hello World!');
   });
@@ -134,10 +136,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await prisma.publications.create({
@@ -161,10 +164,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('GET /posts => should return the posts', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer()).get('/posts');
@@ -173,16 +177,18 @@ describe('AppController (e2e)', () => {
   });
 
   it('GET /posts/:id => should return the posts', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should not have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer()).get('/posts/2');
@@ -191,16 +197,18 @@ describe('AppController (e2e)', () => {
   });
 
   it('GET /posts/:id => should return NOT FOUND', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should not have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer()).get('/posts/3');
@@ -208,10 +216,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('PUT /posts/:id => should return NOT FOUND', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await request(app.getHttpServer())
@@ -224,10 +233,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('PUT /posts/:id => should update successfully', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await request(app.getHttpServer())
@@ -240,10 +250,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('DELETE /posts/:id => should delete post', async () => {
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer()).delete('/posts/1');
@@ -262,10 +273,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await prisma.publications.create({
@@ -286,10 +298,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer())
@@ -309,10 +322,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer())
@@ -331,10 +345,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer())
@@ -355,10 +370,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await prisma.publications.create({
@@ -379,10 +395,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer()).get('/publications/1');
@@ -396,10 +413,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     const response = await request(app.getHttpServer())
@@ -422,10 +440,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    await prisma.post.create({
+    await prisma.posts.create({
       data: {
         title: 'Why you should have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       },
     });
     await prisma.publications.create({

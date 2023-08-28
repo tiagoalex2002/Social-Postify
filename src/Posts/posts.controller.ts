@@ -1,5 +1,5 @@
 import { PostsService } from './posts.service';
-import { CreatePostsDTO } from 'src/Dtos/posts.dtos';
+import { CreatePostsDTO } from '../Dtos/posts.dtos';
 import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import {

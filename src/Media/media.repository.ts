@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMediaDTO } from 'src/Dtos/media.dtos';
-import { PrismaService } from 'src/Prisma/prisma.service';
+import { PrismaService } from '../Prisma/prisma.service';
 
 @Injectable()
 export class MediaRepository {
@@ -18,6 +18,10 @@ export class MediaRepository {
     return this.prisma.media.upsert({
       where: {
         id,
+      },
+      create: {
+        title: media.title,
+        username: media.username,
       },
       update: {
         username: media.username,

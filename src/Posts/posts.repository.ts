@@ -1,5 +1,5 @@
 import { CreatePostsDTO } from 'src/Dtos/posts.dtos';
-import { PrismaService } from 'src/Prisma/prisma.service';
+import { PrismaService } from '../Prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -26,6 +26,11 @@ export class PostRepository {
     return await this.prisma.posts.upsert({
       where: {
         id,
+      },
+      create: {
+        title: post.title,
+        text: post.text,
+        image: post.image,
       },
       update: {
         text: post.text,
