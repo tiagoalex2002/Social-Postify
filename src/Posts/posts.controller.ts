@@ -16,7 +16,7 @@ import {
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
-  @Post('/posts')
+  @Post()
   createPost(@Body() body: CreatePostsDTO) {
     try {
       return this.postsService.createPost(body);
@@ -25,17 +25,17 @@ export class PostsController {
     }
   }
 
-  @Get('/posts')
+  @Get()
   getPosts() {
     return this.postsService.getPosts();
   }
 
-  @Get('/posts/:id')
+  @Get('/:id')
   getPostById(@Param('id') id: string) {
     return this.postsService.getPostById(Number(id));
   }
 
-  @Put('/posts/:id')
+  @Put('/:id')
   updatePost(@Param('id') id: string, @Body() body: CreatePostsDTO) {
     try {
       return this.postsService.updatePost(body, Number(id));
@@ -44,7 +44,7 @@ export class PostsController {
     }
   }
 
-  @Delete('/posts/:id')
+  @Delete('/:id')
   deleteMedia(@Param('id') id: string) {
     try {
       return this.postsService.deletePost(Number(id));

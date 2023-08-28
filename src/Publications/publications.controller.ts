@@ -16,7 +16,7 @@ import { HttpException } from '@nestjs/common';
 export class PublicationsController {
   constructor(private publiService: PublicationsService) {}
 
-  @Post('/publications')
+  @Post()
   createPost(@Body() body: CreatePublicationsDTO) {
     try {
       return this.publiService.createPublication(body);
@@ -25,12 +25,12 @@ export class PublicationsController {
     }
   }
 
-  @Get('/publications')
+  @Get()
   getPublications() {
     return this.publiService.getPublications();
   }
 
-  @Get('/publications/:id')
+  @Get('/:id')
   getPublicationById(@Param('id') id: string) {
     try {
       return this.publiService.getPublicationById(Number(id));
@@ -41,7 +41,7 @@ export class PublicationsController {
     }
   }
 
-  @Put('/publications/:id')
+  @Put('/:id')
   updatePublication(
     @Param('id') id: string,
     @Body() body: CreatePublicationsDTO,
@@ -58,7 +58,7 @@ export class PublicationsController {
     }
   }
 
-  @Delete('/publications/:id')
+  @Delete('/:id')
   deletePublication(@Param('id') id: string) {
     try {
       return this.publiService.deletePublication(Number(id));

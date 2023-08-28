@@ -42,14 +42,14 @@ export class PostsService {
   deletePost(id: number) {
     const exists = this.postRepository.getPublicationByPostId(id);
     if (exists) {
-      const del = this.postRepository.deletePost(id);
-      if (del) {
-        return del;
+      throw new ForbiddenException('FORBIDDEN');
+    } else {
+      const post = this.postRepository.getPostById(id);
+      if (post) {
+        return this.postRepository.deletePost(id);
       } else {
         throw new NotFoundException('NOT FOUND');
       }
-    } else {
-      throw new ForbiddenException('FORBIDDEN');
     }
   }
 }

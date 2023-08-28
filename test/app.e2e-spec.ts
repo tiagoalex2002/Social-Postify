@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus, INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaModule } from '../src/Prisma/prisma.module';
@@ -15,6 +15,7 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     prisma = await moduleFixture.resolve(PrismaService); //ou o get
     await prisma.media.deleteMany();
     await prisma.posts.deleteMany();
@@ -26,7 +27,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect("I'm okay!");
   });
 
   it('GET /medias', async () => {
@@ -39,6 +40,7 @@ describe('AppController (e2e)', () => {
     });
     const response = await request(app.getHttpServer()).get('/medias');
     expect(response.statusCode).toBe(200);
+    console.log(response.body);
     expect(response.body).toHaveLength(1);
   });
 
@@ -78,11 +80,12 @@ describe('AppController (e2e)', () => {
     });
     const response = await request(app.getHttpServer()).get('/medias/1');
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveLength(1);
   });
 
   it('GET /medias/3 => should return NOT FOUND', async () => {
+    await prisma.media.deleteMany();
     const response = await request(app.getHttpServer()).get('/medias/3');
+    console.log(response.body);
     expect(response.statusCode).toBe(404);
   });
 

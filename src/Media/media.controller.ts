@@ -16,7 +16,7 @@ import { HttpStatus } from '@nestjs/common';
 export class MediaController {
   constructor(private mediaService: MediaService) {}
 
-  @Post('/medias')
+  @Post()
   createMedia(@Body() body: CreateMediaDTO) {
     try {
       return this.mediaService.createMedia(body);
@@ -25,17 +25,17 @@ export class MediaController {
     }
   }
 
-  @Get('/medias')
+  @Get()
   getMedias() {
     return this.mediaService.getMedias();
   }
 
-  @Get('/medias/:id')
+  @Get('/:id')
   getMediaById(@Param('id') id: string) {
     return this.mediaService.getMediaById(Number(id));
   }
 
-  @Put('/medias/:id')
+  @Put('/:id')
   updateMedia(@Param('id') id: string, @Body() body: CreateMediaDTO) {
     try {
       return this.mediaService.updateMedia(body, Number(id));
@@ -48,7 +48,7 @@ export class MediaController {
     }
   }
 
-  @Delete('/medias/:id')
+  @Delete('/:id')
   deleteMedia(@Param('id') id: string) {
     try {
       return this.mediaService.deleteMedia(Number(id));

@@ -18,12 +18,13 @@ export class MediaService {
     }
   }
 
-  getMediaById(id: number) {
-    const media = this.mediaRepository.getMediaById(id);
-    if (!media) {
-      throw new NotFoundException('NOT FOUND');
-    } else {
+  async getMediaById(id: number) {
+    const media = await this.mediaRepository.getMediaById(id);
+    console.log(media);
+    if (media) {
       return media;
+    } else {
+      throw new NotFoundException('NOT FOUND');
     }
   }
 
@@ -59,14 +60,14 @@ export class MediaService {
   deleteMedia(id: number) {
     const exists = this.mediaRepository.getPublicationByMediaId(id);
     if (exists) {
-      const del = this.mediaRepository.deleteMedia(id);
-      if (del) {
-        return del;
+      throw new ForbiddenException('FORBIDDEN');
+    } else {
+      const media = this.mediaRepository.getMediaById(id);
+      if (media) {
+        return this.mediaRepository.deleteMedia(id);
       } else {
         throw new NotFoundException('NOT FOUND');
       }
-    } else {
-      throw new ForbiddenException('FORBIDDEN');
     }
   }
 }
