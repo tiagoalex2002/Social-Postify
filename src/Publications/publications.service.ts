@@ -9,16 +9,18 @@ import { ForbiddenException } from '@nestjs/common';
 export class PublicationsService {
   constructor(private publiRepository: PublicationsRepository) {}
 
-  createPublication(publication: CreatePublicationsDTO) {
-    const media = this.publiRepository.getMediaById(publication.mediaId);
-    const post = this.publiRepository.getPostById(publication.postId);
+  async createPublication(publication: CreatePublicationsDTO) {
+    const media = await this.publiRepository.getMediaById(publication.mediaId);
+    const post = await this.publiRepository.getPostById(publication.postId);
     if (!media || !post) {
       throw new NotFoundException('NOT FOUND');
+    } else {
+      return this.publiRepository.createPublication(publication);
     }
   }
 
-  getPublications() {
-    const publications = this.publiRepository.getPublications();
+  async getPublications() {
+    const publications = await this.publiRepository.getPublications();
     if (publications) {
       return publications;
     } else {
@@ -26,8 +28,8 @@ export class PublicationsService {
     }
   }
 
-  getPublicationById(id: number) {
-    const publication = this.publiRepository.getPublicationById(id);
+  async getPublicationById(id: number) {
+    const publication = await this.publiRepository.getPublicationById(id);
     if (publication) {
       return publication;
     } else {
@@ -36,8 +38,8 @@ export class PublicationsService {
   }
 
   async updatePublication(publication: CreatePublicationsDTO, id: number) {
-    const media = this.publiRepository.getMediaById(publication.mediaId);
-    const post = this.publiRepository.getPostById(publication.postId);
+    const media = await this.publiRepository.getMediaById(publication.mediaId);
+    const post = await this.publiRepository.getPostById(publication.postId);
     if (!media || !post) {
       throw new NotFoundException('NOT FOUND');
     } else {
@@ -57,7 +59,7 @@ export class PublicationsService {
   }
 
   async deletePublication(id: number) {
-    const publication = this.publiRepository.getPublicationById(id);
+    const publication = await this.publiRepository.getPublicationById(id);
     if (publication) {
       return this.publiRepository.deletePublication(id);
     } else {

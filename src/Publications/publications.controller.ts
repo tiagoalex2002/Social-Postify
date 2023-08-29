@@ -17,7 +17,7 @@ export class PublicationsController {
   constructor(private publiService: PublicationsService) {}
 
   @Post()
-  createPost(@Body() body: CreatePublicationsDTO) {
+  createPublication(@Body() body: CreatePublicationsDTO) {
     try {
       return this.publiService.createPublication(body);
     } catch (error) {

@@ -44,12 +44,13 @@ export class MediaService {
     }
   }
 
-  updateMedia(media: CreateMediaDTO, id: number) {
+  async updateMedia(media: CreateMediaDTO, id: number) {
     if (media.title === media.username) {
       throw new ConflictException('CONFLICT');
     } else {
-      const midia = this.mediaRepository.getMediaById(id);
-      if (midia) {
+      const exists = await this.mediaRepository.getMediaById(id);
+      console.log(exists);
+      if (exists) {
         return this.mediaRepository.updateMedia(media, id);
       } else {
         throw new NotFoundException('NOT FOUND');
@@ -57,12 +58,12 @@ export class MediaService {
     }
   }
 
-  deleteMedia(id: number) {
-    const exists = this.mediaRepository.getPublicationByMediaId(id);
+  async deleteMedia(id: number) {
+    const exists = await this.mediaRepository.getPublicationByMediaId(id);
     if (exists) {
       throw new ForbiddenException('FORBIDDEN');
     } else {
-      const media = this.mediaRepository.getMediaById(id);
+      const media = await this.mediaRepository.getMediaById(id);
       if (media) {
         return this.mediaRepository.deleteMedia(id);
       } else {

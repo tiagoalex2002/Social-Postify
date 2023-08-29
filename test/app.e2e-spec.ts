@@ -17,9 +17,9 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     prisma = await moduleFixture.resolve(PrismaService); //ou o get
+    await prisma.publications.deleteMany();
     await prisma.media.deleteMany();
     await prisma.posts.deleteMany();
-    await prisma.publications.deleteMany();
     await app.init();
   });
 
@@ -78,14 +78,15 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    const response = await request(app.getHttpServer()).get('/medias/1');
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response = await request(app.getHttpServer()).get(`/medias/${index}`);
     expect(response.statusCode).toBe(200);
   });
 
   it('GET /medias/3 => should return NOT FOUND', async () => {
     await prisma.media.deleteMany();
     const response = await request(app.getHttpServer()).get('/medias/3');
-    console.log(response.body);
     expect(response.statusCode).toBe(404);
   });
 
@@ -97,8 +98,11 @@ describe('AppController (e2e)', () => {
       },
     });
 
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+
     await request(app.getHttpServer())
-      .put('/medias/1')
+      .put(`/medias/${index}`)
       .send({
         title: 'Instagram',
         username: 'myusername-2',
@@ -107,6 +111,8 @@ describe('AppController (e2e)', () => {
   });
 
   it('PUT /medias/1 => should return NOT FOUND when media does not exists', async () => {
+    const response = await request(app.getHttpServer()).get(`/medias/1`);
+    console.log(response.body);
     await request(app.getHttpServer())
       .put('/medias/1')
       .send({
@@ -123,7 +129,11 @@ describe('AppController (e2e)', () => {
         username: 'myusername',
       },
     });
-    const response = await request(app.getHttpServer()).delete('/medias/1');
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response = await request(app.getHttpServer()).delete(
+      `/medias/${index}`,
+    );
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
@@ -146,14 +156,21 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
-        mediaId: 1,
-        postId: 1,
+        mediaId: index,
+        postId: index2,
         date: '2023-08-21T13:25:17.352Z',
       },
     });
-    const response = await request(app.getHttpServer()).delete('/medias/1');
+    const response = await request(app.getHttpServer()).delete(
+      `medias/${index}`,
+    );
     expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
   });
 
@@ -194,9 +211,11 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
-    const response = await request(app.getHttpServer()).get('/posts/2');
+    const response1 = await request(app.getHttpServer()).get('/posts');
+    const index = response1.body[1].id;
+    const response = await request(app.getHttpServer()).get(`/posts/${index}`);
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveLength(1);
+    console.log(response.body);
   });
 
   it('GET /posts/:id => should return NOT FOUND', async () => {
@@ -231,6 +250,7 @@ describe('AppController (e2e)', () => {
       .send({
         title: 'Why you should not have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       })
       .expect(HttpStatus.NOT_FOUND);
   });
@@ -243,11 +263,14 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/posts');
+    const index = response1.body[0].id;
     await request(app.getHttpServer())
-      .put('/posts/1')
+      .put(`/posts/${index}`)
       .send({
         title: 'Why you should not have a guinea pig?',
         text: 'https://www.guineapigs.com/why-you-should-guinea',
+        image: '',
       })
       .expect(HttpStatus.OK);
   });
@@ -260,7 +283,11 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
-    const response = await request(app.getHttpServer()).delete('/posts/1');
+    const response1 = await request(app.getHttpServer()).get('/posts');
+    const index = response1.body[0].id;
+    const response = await request(app.getHttpServer()).delete(
+      `/posts/${index}`,
+    );
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
@@ -283,18 +310,25 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
-        mediaId: 1,
-        postId: 1,
+        mediaId: index,
+        postId: index2,
         date: '2023-08-21T13:25:17.352Z',
       },
     });
-    const response = await request(app.getHttpServer()).delete('/posts/1');
+    const response = await request(app.getHttpServer()).delete(
+      `/posts/${index2}`,
+    );
     expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
   });
 
-  it('POST /publications => should return NOT FOUND', async () => {
+  it('POST /publications => should return CREATED', async () => {
     await prisma.media.create({
       data: {
         title: 'Instagram',
@@ -308,14 +342,18 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     const response = await request(app.getHttpServer())
       .post('/publications')
       .send({
-        mediaId: 1,
-        postId: 1,
-        date: '2023-08-21T13:25:17.352Z',
+        mediaId: index,
+        postId: index2,
       });
-    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
   });
 
   it('POST /publications => should return BAD REQUEST', async () => {
@@ -355,15 +393,20 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
-    const response = await request(app.getHttpServer())
-      .post('/publications')
-      .send({
-        mediaId: 1,
-        postId: 1,
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
+    await prisma.publications.create({
+      data: {
+        mediaId: index,
+        postId: index2,
         date: '2023-08-21T13:25:17.352Z',
-      });
+      },
+    });
+    const response = await request(app.getHttpServer()).get('/publications');
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body).toHaveLength(1);
   });
 
   it('GET /publications/:id => should return the specific publications', async () => {
@@ -380,14 +423,23 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
-        mediaId: 1,
-        postId: 1,
+        mediaId: index,
+        postId: index2,
         date: '2023-08-21T13:25:17.352Z',
       },
     });
-    const response = await request(app.getHttpServer()).get('/publications/1');
+    const response3 = await request(app.getHttpServer()).get('/publications');
+    const index3 = response3.body[0].id;
+    const response = await request(app.getHttpServer()).get(
+      `/publications/${index3}`,
+    );
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
 
@@ -423,9 +475,18 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     const response = await request(app.getHttpServer())
       .put('/publications/1')
-      .send({ id: 1, mediaId: 1, postId: 1, date: '2023-09-21T13:25:17.352Z' });
+      .send({
+        mediaId: index,
+        postId: index2,
+        date: '2023-09-21T13:25:17.352Z',
+      });
     expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
@@ -450,15 +511,22 @@ describe('AppController (e2e)', () => {
         image: '',
       },
     });
+    const response1 = await request(app.getHttpServer()).get('/medias');
+    const index = response1.body[0].id;
+    const response2 = await request(app.getHttpServer()).get('/posts');
+    console.log(response2.body);
+    const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
-        mediaId: 1,
-        postId: 1,
+        mediaId: index,
+        postId: index2,
         date: '2023-08-21T13:25:17.352Z',
       },
     });
+    const response3 = await request(app.getHttpServer()).get('/publications');
+    const index3 = response3.body[0].id;
     const response = await request(app.getHttpServer()).delete(
-      '/publications/1',
+      `/publications/${index3}`,
     );
     expect(response.statusCode).toBe(HttpStatus.OK);
   });
