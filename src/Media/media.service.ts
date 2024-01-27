@@ -30,7 +30,7 @@ export class MediaService {
 
   async createMedia(media: CreateMediaDTO) {
     const medias = await this.mediaRepository.getMedias();
-    if (medias) {
+    if (medias.length !== 0) {
       for (let i = 0; i < medias.length; i++) {
         if (
           media.title === medias[i].title &&

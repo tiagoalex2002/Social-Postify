@@ -1,4 +1,4 @@
-import { IsNumber, IsDate, IsNotEmpty } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsDateString } from 'class-validator';
 
 export class CreatePublicationsDTO {
   @IsNotEmpty()
@@ -9,6 +9,6 @@ export class CreatePublicationsDTO {
   @IsNumber()
   postId: number;
 
-  @IsDate()
+  @IsDateString()
   date?: Date;
 }

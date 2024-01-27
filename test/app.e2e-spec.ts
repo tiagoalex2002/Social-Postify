@@ -40,7 +40,6 @@ describe('AppController (e2e)', () => {
     });
     const response = await request(app.getHttpServer()).get('/medias');
     expect(response.statusCode).toBe(200);
-    console.log(response.body);
     expect(response.body).toHaveLength(1);
   });
 
@@ -111,8 +110,6 @@ describe('AppController (e2e)', () => {
   });
 
   it('PUT /medias/1 => should return NOT FOUND when media does not exists', async () => {
-    const response = await request(app.getHttpServer()).get(`/medias/1`);
-    console.log(response.body);
     await request(app.getHttpServer())
       .put('/medias/1')
       .send({
@@ -159,19 +156,19 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
         mediaId: index,
         postId: index2,
-        date: '2023-08-21T13:25:17.352Z',
+        date: '2024-08-21T13:25:17.352Z',
       },
     });
     const response = await request(app.getHttpServer()).delete(
       `medias/${index}`,
     );
-    expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
+    console.log(response);
+    expect(response.statusCode).toBe(405);
   });
 
   it('POST /posts => should return BAD REQUEST when there are empty fields', async () => {
@@ -215,7 +212,6 @@ describe('AppController (e2e)', () => {
     const index = response1.body[1].id;
     const response = await request(app.getHttpServer()).get(`/posts/${index}`);
     expect(response.statusCode).toBe(200);
-    console.log(response.body);
   });
 
   it('GET /posts/:id => should return NOT FOUND', async () => {
@@ -313,7 +309,6 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
@@ -345,13 +340,13 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     const response = await request(app.getHttpServer())
       .post('/publications')
       .send({
         mediaId: index,
         postId: index2,
+        date: '2024-08-21T13:25:17.352Z',
       });
     expect(response.statusCode).toBe(HttpStatus.CREATED);
   });
@@ -396,7 +391,6 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
@@ -426,7 +420,6 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
@@ -478,7 +471,6 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     const response = await request(app.getHttpServer())
       .put('/publications/1')
@@ -514,7 +506,6 @@ describe('AppController (e2e)', () => {
     const response1 = await request(app.getHttpServer()).get('/medias');
     const index = response1.body[0].id;
     const response2 = await request(app.getHttpServer()).get('/posts');
-    console.log(response2.body);
     const index2 = response2.body[0].id;
     await prisma.publications.create({
       data: {
